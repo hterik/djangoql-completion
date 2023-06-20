@@ -311,7 +311,21 @@ DjangoQL.prototype = {
     // https://cypressnorth.com/programming/internet-explorer-aborting-ajax-requests-fixed/
     /* eslint-enable max-len */
     this.request.onprogress = function () {};
-    window.setTimeout(this.request.send.bind(this.request));
+
+    let prep;
+    if (this.options.prepareXhr) {
+      // Can be used to add extra headers
+      prep = this.options.prepareXhr(this.request)
+    }
+    else {
+      prep = Promise.resolve(this.request)
+    }
+    prep.then(() => {
+      window.setTimeout(this.request.send.bind(this.request));
+    }).catch(e => {
+      onLoadError()
+      this.logError("options.prepareXhr returned error", e)
+    })
   },
 
   loadIntrospections(introspections) {
