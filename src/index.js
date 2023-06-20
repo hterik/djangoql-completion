@@ -332,7 +332,9 @@ DjangoQL.prototype = {
     const initIntrospections = function (data) {
       this.currentModel = data.current_model;
       this.models = data.models;
-      this.suggestionsAPIUrl = data.suggestions_api_url;
+      if (!this.suggestionsAPIUrl) {
+        this.suggestionsAPIUrl = data.suggestions_api_url;
+      }
     }.bind(this);
 
     if (typeof introspections === 'string') {
